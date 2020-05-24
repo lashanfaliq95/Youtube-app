@@ -1,63 +1,88 @@
-import React,{useState} from 'react';
-import { 
-    ListGroupItem,    
-    Card, 
-    CardImg, 
-    CardBody,
-    CardTitle, 
-    Button ,
-    Alert
+import React, { useState } from 'react';
+import {
+  ListGroupItem,
+  Card,
+  CardImg,
+  CardBody,
+  CardTitle,
+  Button,
+  Alert,
+  ButtonGroup,
 } from 'reactstrap';
-import {} from '../../services/videoService'; 
+import {
+  analyzeVideo,
+  getFrequency,
+  getQuestions,
+} from '../../services/videoService';
 
-const ListItem=({imageUrl, videoName, isTerm, id, setList })=>{
+const ListItem = ({ imageUrl, videoName, videoId }) => {
+  const [commentPopularity, setCommentPopularity] = useState(null);
+  const [topicEngagement, setTopicEngagement] = useState(null);
+  const [frequency, setFrequency] = useState(null);
+  const [questions, setQuestions] = useState(null);
 
-const [result,setResult]=useState(null);
+  const onClickAnalyze = () => {
+    analyzeVideo(videoId)
+      .then(({ data }) => {
+        console.log(data);
+        setCommentPopularity(data.commentPopularity);
+        setTopicEngagement(data.topicEngagement);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
-    const onClickAnalyze=()=>{
-        setResult(['test1','test2'])
-    }
+  const onClickFrequency = () => {
+    getFrequency(videoId)
+      .then(({ data }) => {
+        console.log(data);
+        setFrequency(data.frequency);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
-    const onClickGetMostPopularVideos=()=>{
+  const onClickQuestions = () => {
+    getQuestions(videoId)
+      .then(({ data }) => {
+        console.log(data);
+        setQuestions(data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
-    }
-
-    const onClickGetMostRecentVideos=()=>{
-
-    }
-
-    const onClickGetAllVideos=()=>{
-
-    }
-
-    return(
-      <ListGroupItem>
+  return (
+    <ListGroupItem>
       <Card>
-        <CardImg top width="100%" src={imageUrl} alt="Card image cap" />
+        <CardImg top width='100%' src={imageUrl} alt='Card image cap' />
         <CardBody>
-         {isTerm &&
-         <>
           <CardTitle>{videoName}</CardTitle>
-          <Button onClick={onClickAnalyze} >Analyze</Button>
-          {
-        result && result.map((result)=>(
-            <Alert color="success"> {result} </Alert>
-        ))}
-        </>
-         }
-
-         {!isTerm &&
-         <>
-          <CardTitle>{videoName}</CardTitle>
-          <Button onClick={onClickGetMostPopularVideos} >Get most popular videos</Button>
-          <Button onClick={onClickGetMostRecentVideos} >Get most recent videos</Button>
-          <Button onClick={onClickGetAllVideos} >Get all videos</Button>
-        </>
-         }
+          <ButtonGroup>
+            <Button onClick={onClickAnalyze}>Analyze</Button>
+            <Button onClick={onClickFrequency}>Frequency</Button>
+            <Button onClick={onClickQuestions}>Questions</Button>
+          </ButtonGroup>
+          {commentPopularity && (
+            <Alert color='primary'>
+              commentPopularity : {commentPopularity}
+            </Alert>
+          )}
+          {topicEngagement && (
+            <Alert color='primary'>topicEngagement : {topicEngagement}</Alert>
+          )}
+          {frequency && <Alert color='primary'>frequency : {frequency}</Alert>}
+          {questions &&
+            questions.map((question) => (
+              <Alert color='primary'> {question}</Alert>
+            ))}
         </CardBody>
       </Card>
-      </ListGroupItem>
-    )
-}
+    </ListGroupItem>
+  );
+};
 
 export default ListItem;
