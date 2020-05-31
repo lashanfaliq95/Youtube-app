@@ -10,4 +10,7 @@ const searchByChannel=(searchText)=>{
     return axios.get(SERVICE_URL+"search/channel/"+searchText);
 }
 
-export {searchByTerm, searchByChannel};
+const searchAndAnalyzeAll=(searchText)=>{
+    return axios.get(SERVICE_URL+"search/channel/"+searchText);
+}
+export {searchByTerm, searchByChannel, searchAndAnalyzeAll};

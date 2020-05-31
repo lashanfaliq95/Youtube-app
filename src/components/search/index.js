@@ -6,9 +6,9 @@ import {
   Input,
   Button,
 } from 'reactstrap';
-import { searchByTerm, searchByChannel } from '../../services/searchService';
+import { searchByTerm, searchByChannel, searchAndAnalyzeAll } from '../../services/searchService';
 
-const Search = ({ setList }) => {
+const Search = ({ setList, setData }) => {
   const [searchText, setSearchText] = useState('');
 
   const onClickSearchByTerm = () => {
@@ -31,6 +31,17 @@ const Search = ({ setList }) => {
       });
   };
 
+  const onClickSearchAndAnalyzeAll=() =>{
+    searchAndAnalyzeAll(searchText)
+    .then(({ data }) => {
+      setData(data.items);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+
+  }
+  
   return (
     <InputGroup>
       <InputGroupAddon addonType='prepend'>
@@ -49,7 +60,12 @@ const Search = ({ setList }) => {
       </InputGroupAddon>
       <InputGroupAddon addonType='append'>
         <Button color='secondary' onClick={onClickSearchByChannel}>
-          Chanel
+          Channel
+        </Button>
+      </InputGroupAddon>
+      <InputGroupAddon addonType='append'>
+        <Button color='secondary' onClick={onClickSearchAndAnalyzeAll}>
+          Search and analyze all
         </Button>
       </InputGroupAddon>
     </InputGroup>
